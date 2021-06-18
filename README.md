@@ -7,7 +7,7 @@
 ```
     composer install
 ```
-- Agora vamos subir os containers Docker MySql:8.0, Redis:alpine e webserver.
+- Agora vamos subir os containers Docker MySql:8.0, Redis:alpine.
 ```
     sail up -d
 ```
@@ -24,7 +24,7 @@
 - Após subir rode o comando abaixo para rodar todos os testes
 - Antes de rodar o teste, pegue o valor da variavel APP_KEY no .env e coloque na mesma variavel do .env.testing
 ```
-    sail artisan test
+    sail test
 ``` 
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>

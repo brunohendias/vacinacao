@@ -17,12 +17,15 @@
                     onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="00000000" />
             </div>
             <button type="submit" class="btn btn-success h-100" :disabled="disable">
-                <span> Cadastrar </span>
+                <span v-if="load" class="spinner-border" style="width: 1rem; height: 1rem;"></span>
+                <span v-else> Cadastrar </span>
             </button>
         </div>
     </form>
 </template>
+
 <script>
+import { Inertia } from '@inertiajs/inertia'
 import { cnpj } from '../../core/masks'
 
 export default {
@@ -34,8 +37,13 @@ export default {
                 nome: null,
                 cnpj: null,
                 qtd_dose_disponivel: null
-            }
+            },
+            load: false
         }
+    },
+    created() {
+        Inertia.on('start', (event) => this.load = true)
+        Inertia.on('finish', (event) => this.load = false)
     },
     computed: {
         disable() {

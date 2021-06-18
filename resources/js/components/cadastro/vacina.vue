@@ -31,14 +31,17 @@
                 <input class="form-control" type="date" name="data_validade" v-model="body.data_validade" />
             </div>
             <div class="col-sm-3 h-100 ml-auto text-right">
-                <button type="submit" class="btn btn-success" :disabled="disable">
-                    <span> Cadastrar </span>
+                <button type="submit" class="btn btn-success h-100" :disabled="disable">
+                    <span v-if="load" class="spinner-border" style="width: 1rem; height: 1rem;"></span>
+                    <span v-else> Cadastrar </span>
                 </button>
             </div>
         </div>
     </form>
 </template>
+
 <script>
+import { Inertia } from '@inertiajs/inertia'
 import fabricantes from '../shared/select/fabricante.vue'
 
 export default {
@@ -56,8 +59,13 @@ export default {
                 qtd_recebida: null,
                 qtd_atual: null,
                 intervalo_min: null
-            }
+            },
+            load: false
         }
+    },
+    created() {
+        Inertia.on('start', (event) => this.load = true)
+        Inertia.on('finish', (event) => this.load = false)
     },
     computed: {
         disable() {

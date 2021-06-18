@@ -2149,7 +2149,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _core_masks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/masks */ "./resources/js/core/masks.js");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var _core_masks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/masks */ "./resources/js/core/masks.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2180,18 +2181,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'fabricanteCadastro',
   data: function data() {
     return {
-      cnpj: _core_masks__WEBPACK_IMPORTED_MODULE_1__.cnpj,
+      cnpj: _core_masks__WEBPACK_IMPORTED_MODULE_2__.cnpj,
       body: {
         nome: null,
         cnpj: null,
         qtd_dose_disponivel: null
-      }
+      },
+      load: false
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('start', function (event) {
+      return _this.load = true;
+    });
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('finish', function (event) {
+      return _this.load = false;
+    });
   },
   computed: {
     disable: function disable() {
@@ -2200,14 +2215,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     submit: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!_this.disable) {
+                if (!_this2.disable) {
                   _context.next = 2;
                   break;
                 }
@@ -2216,7 +2231,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 _context.next = 4;
-                return _this.$inertia.post('/fabricante', _this.body);
+                return _this2.$inertia.post('/fabricante', _this2.body);
 
               case 4:
               case "end":
@@ -2244,8 +2259,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _shared_select_paciente_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/select/paciente.vue */ "./resources/js/components/shared/select/paciente.vue");
-/* harmony import */ var _shared_select_vacina_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/select/vacina.vue */ "./resources/js/components/shared/select/vacina.vue");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var _shared_select_paciente_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/select/paciente.vue */ "./resources/js/components/shared/select/paciente.vue");
+/* harmony import */ var _shared_select_vacina_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/select/vacina.vue */ "./resources/js/components/shared/select/vacina.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2276,13 +2292,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'historicoCadastro',
   components: {
-    pacientes: _shared_select_paciente_vue__WEBPACK_IMPORTED_MODULE_1__.default,
-    vacinas: _shared_select_vacina_vue__WEBPACK_IMPORTED_MODULE_2__.default
+    pacientes: _shared_select_paciente_vue__WEBPACK_IMPORTED_MODULE_2__.default,
+    vacinas: _shared_select_vacina_vue__WEBPACK_IMPORTED_MODULE_3__.default
   },
   data: function data() {
     return {
@@ -2291,8 +2310,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         cod_paciente: null,
         cod_vacina: null,
         id_dose: null
-      }
+      },
+      load: false
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('start', function (event) {
+      return _this.load = true;
+    });
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('finish', function (event) {
+      return _this.load = false;
+    });
   },
   computed: {
     disable: function disable() {
@@ -2301,14 +2331,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     submit: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!_this.disable) {
+                if (!_this2.disable) {
                   _context.next = 2;
                   break;
                 }
@@ -2317,7 +2347,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 _context.next = 4;
-                return _this.$inertia.post('/historico', _this.body);
+                return _this2.$inertia.post('/historico', _this2.body);
 
               case 4:
               case "end":
@@ -2345,7 +2375,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _core_masks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/masks */ "./resources/js/core/masks.js");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var _core_masks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/masks */ "./resources/js/core/masks.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2382,21 +2413,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'fabricanteCadastro',
   data: function data() {
     return {
-      cpf: _core_masks__WEBPACK_IMPORTED_MODULE_1__.cpf,
-      rg: _core_masks__WEBPACK_IMPORTED_MODULE_1__.rg,
-      telefone: _core_masks__WEBPACK_IMPORTED_MODULE_1__.telefone,
+      cpf: _core_masks__WEBPACK_IMPORTED_MODULE_2__.cpf,
+      rg: _core_masks__WEBPACK_IMPORTED_MODULE_2__.rg,
+      telefone: _core_masks__WEBPACK_IMPORTED_MODULE_2__.telefone,
       body: {
         nome: null,
         cpf: null,
         rg: null,
         telefone: null
-      }
+      },
+      load: false
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('start', function (event) {
+      return _this.load = true;
+    });
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('finish', function (event) {
+      return _this.load = false;
+    });
   },
   computed: {
     disable: function disable() {
@@ -2405,14 +2449,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     submit: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!_this.disable) {
+                if (!_this2.disable) {
                   _context.next = 2;
                   break;
                 }
@@ -2421,7 +2465,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 _context.next = 4;
-                return _this.$inertia.post('/paciente', _this.body);
+                return _this2.$inertia.post('/paciente', _this2.body);
 
               case 4:
               case "end":
@@ -2449,7 +2493,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _shared_select_fabricante_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/select/fabricante.vue */ "./resources/js/components/shared/select/fabricante.vue");
+/* harmony import */ var _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia */ "./node_modules/@inertiajs/inertia/dist/index.js");
+/* harmony import */ var _shared_select_fabricante_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/select/fabricante.vue */ "./resources/js/components/shared/select/fabricante.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2496,11 +2541,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'fabricanteCadastro',
   components: {
-    fabricantes: _shared_select_fabricante_vue__WEBPACK_IMPORTED_MODULE_1__.default
+    fabricantes: _shared_select_fabricante_vue__WEBPACK_IMPORTED_MODULE_2__.default
   },
   data: function data() {
     return {
@@ -2512,8 +2560,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         qtd_recebida: null,
         qtd_atual: null,
         intervalo_min: null
-      }
+      },
+      load: false
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('start', function (event) {
+      return _this.load = true;
+    });
+    _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.on('finish', function (event) {
+      return _this.load = false;
+    });
   },
   computed: {
     disable: function disable() {
@@ -2522,16 +2581,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     submit: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this.body.qtd_atual = _this.body.qtd_recebida;
+                _this2.body.qtd_atual = _this2.body.qtd_recebida;
 
-                if (!_this.disable) {
+                if (!_this2.disable) {
                   _context.next = 3;
                   break;
                 }
@@ -2540,7 +2599,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 3:
                 _context.next = 5;
-                return _this.$inertia.post('/vacina', _this.body);
+                return _this2.$inertia.post('/vacina', _this2.body);
 
               case 5:
               case "end":
@@ -12455,7 +12514,14 @@ var render = function() {
             staticClass: "btn btn-success h-100",
             attrs: { type: "submit", disabled: _vm.disable }
           },
-          [_c("span", [_vm._v(" Cadastrar ")])]
+          [
+            _vm.load
+              ? _c("span", {
+                  staticClass: "spinner-border",
+                  staticStyle: { width: "1rem", height: "1rem" }
+                })
+              : _c("span", [_vm._v(" Cadastrar ")])
+          ]
         )
       ])
     ]
@@ -12579,7 +12645,14 @@ var render = function() {
             staticClass: "btn btn-success h-100",
             attrs: { type: "submit", disabled: _vm.disable }
           },
-          [_c("span", [_vm._v(" Cadastrar ")])]
+          [
+            _vm.load
+              ? _c("span", {
+                  staticClass: "spinner-border",
+                  staticStyle: { width: "1rem", height: "1rem" }
+                })
+              : _c("span", [_vm._v(" Cadastrar ")])
+          ]
         )
       ])
     ]
@@ -12739,7 +12812,14 @@ var render = function() {
             staticClass: "btn btn-success h-100",
             attrs: { type: "submit", disabled: _vm.disable }
           },
-          [_c("span", [_vm._v(" Cadastrar ")])]
+          [
+            _vm.load
+              ? _c("span", {
+                  staticClass: "spinner-border",
+                  staticStyle: { width: "1rem", height: "1rem" }
+                })
+              : _c("span", [_vm._v(" Cadastrar ")])
+          ]
         )
       ])
     ]
@@ -12953,10 +13033,17 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-success",
+              staticClass: "btn btn-success h-100",
               attrs: { type: "submit", disabled: _vm.disable }
             },
-            [_c("span", [_vm._v(" Cadastrar ")])]
+            [
+              _vm.load
+                ? _c("span", {
+                    staticClass: "spinner-border",
+                    staticStyle: { width: "1rem", height: "1rem" }
+                  })
+                : _c("span", [_vm._v(" Cadastrar ")])
+            ]
           )
         ])
       ])
