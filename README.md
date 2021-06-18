@@ -1,3 +1,32 @@
+# Como rodar a aplicação?
+- Rode o comando abaixo para o Framework encontrar as variaveis de ambiente necessarias
+```
+    mv .env.example .env
+```
+- Rode o comando abaixo para instalar as dependencias do projeto.
+```
+    composer install
+```
+- Agora vamos subir os containers Docker MySql:8.0, Redis:alpine e webserver.
+```
+    sail up -d
+```
+- Por fim rode os comandos abaixo para criar as tabelas e inserir os dados ficticios.
+```
+    sail artisan key:generate
+    sail artisan migrate
+    sail artisan db:seed
+```
+- Para rodar os testes de integração primeiro suba os containers da aplicação rodando o comando abaixo
+```
+    sail up -d
+```
+- Após subir rode o comando abaixo para rodar todos os testes
+- Antes de rodar o teste, pegue o valor da variavel APP_KEY no .env e coloque na mesma variavel do .env.testing
+```
+    sail artisan test
+``` 
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
