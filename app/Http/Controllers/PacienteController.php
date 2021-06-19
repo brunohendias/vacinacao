@@ -16,11 +16,15 @@ class PacienteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() : object
+    public function index()
     {
-        $dados = $this->model->SelectPaciente()->get();
+        try {
+            $dados = $this->model->SelectPaciente()->get();
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
-        return Inertia::render('Paciente', ['dados' => $dados]);
+        return Inertia::render('Paciente', ['dados' => $dados ?? []]);
     }
 
     /**
@@ -28,9 +32,13 @@ class PacienteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get() : object
+    public function get()
     {
-        return $this->model->SelectPaciente()->get();
+        try {
+            return $this->model->SelectPaciente()->get();
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
     }
 
     /**
@@ -41,16 +49,20 @@ class PacienteController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nome' => 'required|string',
-            'cpf' => 'required|string|unique:pacientes,cpf|min:11|max:11',
-            'rg' => 'required|string|unique:pacientes,rg|min:9|max:9',
-            'telefone' => 'required|string'
-        ]);
+        try {
+            $request->validate([
+                'nome' => 'required|string',
+                'cpf' => 'required|string|unique:pacientes,cpf|min:11|max:11',
+                'rg' => 'required|string|unique:pacientes,rg|min:9|max:9',
+                'telefone' => 'required|string'
+            ]);
 
-        $this->model->create(
-            $request->only('nome', 'cpf', 'rg', 'telefone')
-        );
+            $this->model->create(
+                $request->only('nome', 'cpf', 'rg', 'telefone')
+            );
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
         return Redirect::route('paciente.index');
     }
@@ -63,9 +75,10 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-        return $this->RespSuccess(array(
-            'msg' => __('return.find'),
-            'dados' => $paciente
-        ));
+        try {
+            return Inertia::render('Paciente', ['dados' => $paciente]);
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\LoggingTrait;
 use App\Http\Traits\ResponderTrait;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -11,5 +12,6 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, 
-        ValidatesRequests, ResponderTrait;
+        ValidatesRequests, ResponderTrait,
+        LoggingTrait;
 }

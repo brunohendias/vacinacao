@@ -16,11 +16,15 @@ class FabricanteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() : object
+    public function index()
     {
-        $dados = $this->model->SelectFabricante()->get();
+        try {
+            $dados = $this->model->SelectFabricante()->get();
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
-        return Inertia::render('Fabricante', ['dados' => $dados]);
+        return Inertia::render('Fabricante', ['dados' => $dados ?? []]);
     }
 
     /**
@@ -28,9 +32,13 @@ class FabricanteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get() : object
+    public function get()
     {
-        return $this->model->SelectFabricante()->get();
+        try {
+            return $this->model->SelectFabricante()->get();
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
     }
 
     /**
@@ -41,15 +49,19 @@ class FabricanteController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nome' => 'required|string|unique:fabricantes,nome|max:255',
-            'cnpj' => 'required|string|unique:fabricantes,cnpj|min:14|max:14',
-            'qtd_dose_disponivel' => 'required|integer'
-        ]);
+        try {
+            $request->validate([
+                'nome' => 'required|string|unique:fabricantes,nome|max:255',
+                'cnpj' => 'required|string|unique:fabricantes,cnpj|min:14|max:14',
+                'qtd_dose_disponivel' => 'required|integer'
+            ]);
 
-        $this->model->create(
-            $request->only('nome', 'cnpj', 'qtd_dose_disponivel')
-        );
+            $this->model->create(
+                $request->only('nome', 'cnpj', 'qtd_dose_disponivel')
+            );
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
         return Redirect::route('fabricante.index');
     }
@@ -60,11 +72,12 @@ class FabricanteController extends Controller
      * @param  \App\Models\Fabricante  $fabricante
      * @return \Illuminate\Http\Response
      */
-    public function show(Fabricante $fabricante) : object
+    public function show(Fabricante $fabricante)
     {
-        return $this->RespSuccess([
-            'msg' => __('return.find'),
-            'dados' => $fabricante
-        ]);
+        try {
+            return Inertia::render('Paciente', ['dados' => $fabricante]);
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
     }
 }

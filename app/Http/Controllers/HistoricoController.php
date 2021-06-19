@@ -18,12 +18,16 @@ class HistoricoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): object
+    public function index()
     {
-        $dados = $this->model->SelectHistorico()
-            ->with('paciente')->with('vacina')->get();
+        try {
+            $dados = $this->model->SelectHistorico()
+                ->with('paciente')->with('vacina')->get();
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
-        return Inertia::render('Historico', ['dados' => $dados]);
+        return Inertia::render('Historico', ['dados' => $dados ?? []]);
     }
 
     /**
@@ -34,23 +38,27 @@ class HistoricoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'data_vacinacao' => 'required|date',
-            'cod_paciente' => ['required','integer','exists:pacientes,id',Rule::unique('historicos')
-                ->where('cod_paciente', $request->cod_paciente)->where('cod_vacina', $request->cod_vacina)],
-            'cod_vacina' => 'required|integer|exists:vacinas,id',
-            'id_dose' => 'required|string',
-            'dose_atual' => 'integer',
-        ]);
+        try {
+            $request->validate([
+                'data_vacinacao' => 'required|date',
+                'cod_paciente' => ['required','integer','exists:pacientes,id',Rule::unique('historicos')
+                    ->where('cod_paciente', $request->cod_paciente)->where('cod_vacina', $request->cod_vacina)],
+                'cod_vacina' => 'required|integer|exists:vacinas,id',
+                'id_dose' => 'required|string',
+                'dose_atual' => 'integer',
+            ]);
 
-        $vacina = Vacina::find($request->cod_vacina);
-        $intervalo_min = $vacina->intervalo_min;
-        $request['data_prox_vaci'] = date("Y-m-d", strtotime("$request->data_vacinacao + $intervalo_min days"));
+            $vacina = Vacina::find($request->cod_vacina);
+            $intervalo_min = $vacina->intervalo_min;
+            $request['data_prox_vaci'] = date("Y-m-d", strtotime("$request->data_vacinacao + $intervalo_min days"));
 
-        $this->model->create(
-            $request->only('data_vacinacao', 'data_prox_vaci',
-                'cod_paciente', 'cod_vacina', 'dose_atual', 'id_dose')
-        );
+            $this->model->create(
+                $request->only('data_vacinacao', 'data_prox_vaci',
+                    'cod_paciente', 'cod_vacina', 'dose_atual', 'id_dose')
+            );
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
         return Redirect::route('historico.index');
     }
@@ -64,16 +72,20 @@ class HistoricoController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $historico = $this->model->find($id);
-        if (!is_null($historico)) {
-            if (date("Y-m-d") == $request->data_prox_vaci) {
-                $vacina = Vacina::find($historico->cod_vacina);
-                $intervalo_min = $vacina->intervalo_min;
-                $dados['data_vacinacao'] = date("Y-m-d");
-                $dados['data_prox_vaci'] = date("Y-m-d", strtotime(date("Y-m-d")." + $intervalo_min days"));
-                $dados['dose_atual'] = $historico->dose_atual += 1;
-                $historico->update($dados);
+        try {
+            $historico = $this->model->find($id);
+            if (!is_null($historico)) {
+                if (date("Y-m-d") == $request->data_prox_vaci) {
+                    $vacina = Vacina::find($historico->cod_vacina);
+                    $intervalo_min = $vacina->intervalo_min;
+                    $dados['data_vacinacao'] = date("Y-m-d");
+                    $dados['data_prox_vaci'] = date("Y-m-d", strtotime(date("Y-m-d")." + $intervalo_min days"));
+                    $dados['dose_atual'] = $historico->dose_atual += 1;
+                    $historico->update($dados);
+                }
             }
+        } catch (\Exception $e) {
+            $this->LogError($e);
         }
 
         return Redirect::route('historico.index');
@@ -85,11 +97,12 @@ class HistoricoController extends Controller
      * @param  \App\Models\Historico  $historico
      * @return \Illuminate\Http\Response
      */
-    public function show(Historico $historico): object
+    public function show(Historico $historico)
     {
-        return $this->RespSuccess(array(
-            'msg' => __('return.find'),
-            'dados' => $historico
-        ));
+        try {
+            return Inertia::render('Historico', ['dados' => $historico ]);
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
     }
 }
