@@ -4,7 +4,7 @@ namespace App\Http\Traits;
 trait ResponderTrait {
 
     /**
-     * Funcao para retorno de sucesso 
+     * Metodo para retorno de sucesso 
      * @return \Illuminate\Http\Response
      */
     protected function RespSuccess(array $dados)
@@ -13,7 +13,7 @@ trait ResponderTrait {
     }
 
     /**
-     * Funcao para retorno de falha
+     * Metodo para retorno de falha
      * Exemplos: no-content, bad-request
      * @return \Illuminate\Http\Response
      */
@@ -23,8 +23,8 @@ trait ResponderTrait {
 	}
 
     /**
-     * Funcao para retorno de erro: Exception, Log
-     * Funcao para enviar o log para o Kibana por exemplo
+     * Metodo para retorno de erro: Exception, Log
+     * Metodo para enviar o log para o Kibana por exemplo
      * Exemplos: Table or View dosen't exists
      * @return \Illuminate\Http\Response
      */
