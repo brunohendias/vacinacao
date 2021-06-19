@@ -10,6 +10,8 @@ use Inertia\Inertia;
 
 class VacinaController extends Controller
 {
+    private string $view = 'Vacina';
+
     public function __construct(private Vacina $model) {}
 
     /**
@@ -25,9 +27,10 @@ class VacinaController extends Controller
                 ->get();
         } catch (\Exception $e) {
             $this->LogError($e);
+            $dados = [];
         }
 
-        return Inertia::render('Vacina', ['dados' => $dados ?? []]);
+        return Inertia::render($this->view, ['dados' => $dados]);
     }
 
     /**
@@ -54,25 +57,29 @@ class VacinaController extends Controller
      */
     public function store(Request $request)
     {
+        $tot_vacinas = 0;
         try {
-            $tot_vacinas = 0;
             if ($request->cod_fabricante) {
                 $fabricante = Fabricante::find($request->cod_fabricante);
                 if (!is_null($fabricante)) {
                     $tot_vacinas = $fabricante->qtd_dose_disponivel;
                 }
             }
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
 
-            $request->validate([
-                'nome' => 'required|string',
-                'cod_fabricante' => 'required|integer|exists:fabricantes,id',
-                'lote' => 'required|string',
-                'data_validade' => 'required|date|after:now',
-                'qtd_recebida' => "required|integer|between:1,$tot_vacinas",
-                'qtd_atual' => 'required|integer',
-                'intervalo_min' => 'required|integer'
-            ]);
+        $request->validate([
+            'nome' => 'required|string',
+            'cod_fabricante' => 'required|integer|exists:fabricantes,id',
+            'lote' => 'required|string',
+            'data_validade' => 'required|date|after:now',
+            'qtd_recebida' => "required|integer|between:1,$tot_vacinas",
+            'qtd_atual' => 'required|integer',
+            'intervalo_min' => 'required|integer'
+        ]);
 
+        try {
             $this->model->create(
                 $request->only('nome','cod_fabricante','lote','data_validade',
                     'qtd_recebida','qtd_atual','intervalo_min')
@@ -93,7 +100,7 @@ class VacinaController extends Controller
     public function show(Vacina $vacina)
     {
         try {
-            return Inertia::render('Paciente', ['dados' => $vacina]);
+            return Inertia::render($this->view, ['dados' => $vacina]);
         } catch (\Exception $e) {
             $this->LogError($e);
         }

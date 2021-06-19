@@ -9,6 +9,8 @@ use Inertia\Inertia;
 
 class FabricanteController extends Controller
 {
+    private string $view = 'Fabricante';
+
     public function __construct(private Fabricante $model) {}
 
     /**
@@ -22,9 +24,10 @@ class FabricanteController extends Controller
             $dados = $this->model->SelectFabricante()->get();
         } catch (\Exception $e) {
             $this->LogError($e);
+            $dados = [];
         }
 
-        return Inertia::render('Fabricante', ['dados' => $dados ?? []]);
+        return Inertia::render($this->view, ['dados' => $dados]);
     }
 
     /**
@@ -49,13 +52,13 @@ class FabricanteController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nome' => 'required|string|unique:fabricantes,nome|max:255',
+            'cnpj' => 'required|string|unique:fabricantes,cnpj|min:14|max:14',
+            'qtd_dose_disponivel' => 'required|integer'
+        ]);
+        
         try {
-            $request->validate([
-                'nome' => 'required|string|unique:fabricantes,nome|max:255',
-                'cnpj' => 'required|string|unique:fabricantes,cnpj|min:14|max:14',
-                'qtd_dose_disponivel' => 'required|integer'
-            ]);
-
             $this->model->create(
                 $request->only('nome', 'cnpj', 'qtd_dose_disponivel')
             );
@@ -75,7 +78,7 @@ class FabricanteController extends Controller
     public function show(Fabricante $fabricante)
     {
         try {
-            return Inertia::render('Paciente', ['dados' => $fabricante]);
+            return Inertia::render($this->view, ['dados' => $fabricante]);
         } catch (\Exception $e) {
             $this->LogError($e);
         }

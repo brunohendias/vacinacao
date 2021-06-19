@@ -11,6 +11,8 @@ use Inertia\Inertia;
 
 class HistoricoController extends Controller
 {
+    private string $view = 'Historico';
+
     public function __construct(private Historico $model) {}
 
     /**
@@ -22,12 +24,15 @@ class HistoricoController extends Controller
     {
         try {
             $dados = $this->model->SelectHistorico()
-                ->with('paciente')->with('vacina')->get();
+                ->with('paciente')
+                ->with('vacina')
+                ->get();
         } catch (\Exception $e) {
             $this->LogError($e);
+            $dados = [];
         }
 
-        return Inertia::render('Historico', ['dados' => $dados ?? []]);
+        return Inertia::render($this->view, ['dados' => $dados]);
     }
 
     /**
@@ -38,16 +43,19 @@ class HistoricoController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'data_vacinacao' => 'required|date',
-                'cod_paciente' => ['required','integer','exists:pacientes,id',Rule::unique('historicos')
-                    ->where('cod_paciente', $request->cod_paciente)->where('cod_vacina', $request->cod_vacina)],
-                'cod_vacina' => 'required|integer|exists:vacinas,id',
-                'id_dose' => 'required|string',
-                'dose_atual' => 'integer',
-            ]);
+        $request->validate([
+            'data_vacinacao' => 'required|date',
+            'cod_paciente' => [
+                'required','integer','exists:pacientes,id',
+                Rule::unique('historicos')->where('cod_paciente', $request->cod_paciente)
+                ->where('cod_vacina', $request->cod_vacina)
+            ],
+            'cod_vacina' => 'required|integer|exists:vacinas,id',
+            'id_dose' => 'required|string',
+            'dose_atual' => 'integer',
+        ]);
 
+        try {
             $vacina = Vacina::find($request->cod_vacina);
             $intervalo_min = $vacina->intervalo_min;
             $request['data_prox_vaci'] = date("Y-m-d", strtotime("$request->data_vacinacao + $intervalo_min days"));
@@ -67,22 +75,19 @@ class HistoricoController extends Controller
      * Update a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param   int $id
+     * @param  \App\Models\Historico $historico
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, Historico $historico)
     {
         try {
-            $historico = $this->model->find($id);
-            if (!is_null($historico)) {
-                if (date("Y-m-d") == $request->data_prox_vaci) {
-                    $vacina = Vacina::find($historico->cod_vacina);
-                    $intervalo_min = $vacina->intervalo_min;
-                    $dados['data_vacinacao'] = date("Y-m-d");
-                    $dados['data_prox_vaci'] = date("Y-m-d", strtotime(date("Y-m-d")." + $intervalo_min days"));
-                    $dados['dose_atual'] = $historico->dose_atual += 1;
-                    $historico->update($dados);
-                }
+            if (date("Y-m-d") == $historico->data_prox_vaci) {
+                $vacina = Vacina::find($historico->cod_vacina);
+                $intervalo_min = $vacina->intervalo_min;
+                $dados['data_vacinacao'] = date("Y-m-d");
+                $dados['data_prox_vaci'] = date("Y-m-d", strtotime(date("Y-m-d")." + $intervalo_min days"));
+                $dados['dose_atual'] = $historico->dose_atual += 1;
+                $historico->update($dados);
             }
         } catch (\Exception $e) {
             $this->LogError($e);
@@ -100,7 +105,7 @@ class HistoricoController extends Controller
     public function show(Historico $historico)
     {
         try {
-            return Inertia::render('Historico', ['dados' => $historico ]);
+            return Inertia::render($this->view, ['dados' => $historico ]);
         } catch (\Exception $e) {
             $this->LogError($e);
         }

@@ -9,6 +9,8 @@ use Inertia\Inertia;
 
 class PacienteController extends Controller
 {
+    private string $view = 'Paciente';
+
     public function __construct(private Paciente $model) {}
 
     /**
@@ -22,9 +24,10 @@ class PacienteController extends Controller
             $dados = $this->model->SelectPaciente()->get();
         } catch (\Exception $e) {
             $this->LogError($e);
+            $dados = [];
         }
 
-        return Inertia::render('Paciente', ['dados' => $dados ?? []]);
+        return Inertia::render($this->view, ['dados' => $dados]);
     }
 
     /**
@@ -49,14 +52,14 @@ class PacienteController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'nome' => 'required|string',
-                'cpf' => 'required|string|unique:pacientes,cpf|min:11|max:11',
-                'rg' => 'required|string|unique:pacientes,rg|min:9|max:9',
-                'telefone' => 'required|string'
-            ]);
+        $request->validate([
+            'nome' => 'required|string',
+            'cpf' => 'required|string|unique:pacientes,cpf|min:11|max:11',
+            'rg' => 'required|string|unique:pacientes,rg|min:9|max:9',
+            'telefone' => 'required|string'
+        ]);
 
+        try {
             $this->model->create(
                 $request->only('nome', 'cpf', 'rg', 'telefone')
             );
@@ -76,7 +79,7 @@ class PacienteController extends Controller
     public function show(Paciente $paciente)
     {
         try {
-            return Inertia::render('Paciente', ['dados' => $paciente]);
+            return Inertia::render($this->view, ['dados' => $paciente]);
         } catch (\Exception $e) {
             $this->LogError($e);
         }

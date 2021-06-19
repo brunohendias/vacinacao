@@ -32,5 +32,5 @@ Route::prefix('paciente')->group(function () {
 Route::prefix('historico')->group(function () {
     Route::get('/', 'HistoricoController@index')->name('historico.index');
     Route::post('/', 'HistoricoController@store');
-    Route::put('/{id}', 'HistoricoController@update');
+    Route::put('/{historico}', 'HistoricoController@update');
 });
