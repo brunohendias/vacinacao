@@ -18,7 +18,7 @@ class PacienteController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(string $success = null)
     {
         try {
             $dados = $this->model->SelectPaciente()->get();
@@ -27,7 +27,7 @@ class PacienteController extends Controller
             $dados = [];
         }
 
-        return Inertia::render($this->view, ['dados' => $dados]);
+        return Inertia::render($this->view, ['dados' => $dados, 'success' => $success]);
     }
 
     /**
@@ -56,13 +56,15 @@ class PacienteController extends Controller
             'nome' => 'required|string',
             'cpf' => 'required|string|unique:pacientes,cpf|min:11|max:11',
             'rg' => 'required|string|unique:pacientes,rg|min:9|max:9',
-            'telefone' => 'required|string'
+            'telefone' => 'required|string|min:11|max:11'
         ]);
 
         try {
             $this->model->create(
                 $request->only('nome', 'cpf', 'rg', 'telefone')
             );
+            
+            return $this->index(__('return.store'));
         } catch (\Exception $e) {
             $this->LogError($e);
         }
@@ -71,17 +73,26 @@ class PacienteController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Update a newly created resource in storage.
      *
-     * @param  \App\Models\Paciente  $paciente
-     * @return \Inertia\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Paciente $paciente
+     * @return \Illuminate\Http\Response
      */
-    public function show(Paciente $paciente)
+    public function update(Request $request, Paciente $paciente)
     {
+        $request->validate([
+            'telefone' => 'required|string|min:11|max:11'
+        ]);
+
         try {
-            return Inertia::render($this->view, ['dados' => $paciente]);
+            $paciente->update(
+                $request->only('telefone')
+            );
         } catch (\Exception $e) {
             $this->LogError($e);
         }
+
+        return Redirect::route('paciente.index');
     }
 }

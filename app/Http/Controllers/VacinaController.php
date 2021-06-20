@@ -6,6 +6,7 @@ use App\Models\Fabricante;
 use App\Models\Vacina;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class VacinaController extends Controller
@@ -19,7 +20,7 @@ class VacinaController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(string $success = null)
     {
         try {
             $dados = $this->model->SelectVacina()
@@ -30,7 +31,7 @@ class VacinaController extends Controller
             $dados = [];
         }
 
-        return Inertia::render($this->view, ['dados' => $dados]);
+        return Inertia::render($this->view, ['dados' => $dados, 'success' => $success]);
     }
 
     /**
@@ -57,26 +58,28 @@ class VacinaController extends Controller
      */
     public function store(Request $request)
     {
-        $tot_vacinas = 0;
-        try {
-            if ($request->cod_fabricante) {
-                $fabricante = Fabricante::find($request->cod_fabricante);
-                if (!is_null($fabricante)) {
-                    $tot_vacinas = $fabricante->qtd_dose_disponivel;
-                }
-            }
-        } catch (\Exception $e) {
-            $this->LogError($e);
+        if (!$request->qtd_atual) {
+            $request['qtd_atual'] = $request->qtd_recebida;
         }
 
         $request->validate([
-            'nome' => 'required|string',
+            'nome' => [
+                'required','string',
+                Rule::unique('vacinas')->where('nome', $request->nome)
+                ->where('cod_fabricante', $request->cod_fabricante)
+            ],
             'cod_fabricante' => 'required|integer|exists:fabricantes,id',
             'lote' => 'required|string',
             'data_validade' => 'required|date|after:now',
-            'qtd_recebida' => "required|integer|between:1,$tot_vacinas",
-            'qtd_atual' => 'required|integer',
-            'intervalo_min' => 'required|integer'
+            'qtd_recebida' => "required|integer",
+            'qtd_atual' => "required|integer",
+            'intervalo_min' => 'required|integer|min:1'
+        ]);
+        
+        $fabricante = Fabricante::find($request->cod_fabricante);
+        $tot_vacinas = $fabricante->qtd_dose_disponivel;
+        $request->validate([
+            'qtd_recebida' => "between:1,$tot_vacinas"
         ]);
 
         try {
@@ -84,25 +87,12 @@ class VacinaController extends Controller
                 $request->only('nome','cod_fabricante','lote','data_validade',
                     'qtd_recebida','qtd_atual','intervalo_min')
             );
+
+            return $this->index(__('return.store'));
         } catch (\Exception $e) {
             $this->LogError($e);
         }
 
         return Redirect::route('vacina.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Vacina  $vacina
-     * @return \Inertia\Response
-     */
-    public function show(Vacina $vacina)
-    {
-        try {
-            return Inertia::render($this->view, ['dados' => $vacina]);
-        } catch (\Exception $e) {
-            $this->LogError($e);
-        }
     }
 }

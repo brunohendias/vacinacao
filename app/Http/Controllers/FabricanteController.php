@@ -18,7 +18,7 @@ class FabricanteController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(string $success = null)
     {
         try {
             $dados = $this->model->SelectFabricante()->get();
@@ -27,7 +27,7 @@ class FabricanteController extends Controller
             $dados = [];
         }
 
-        return Inertia::render($this->view, ['dados' => $dados]);
+        return Inertia::render($this->view, ['dados' => $dados, 'success' => $success]);
     }
 
     /**
@@ -62,6 +62,8 @@ class FabricanteController extends Controller
             $this->model->create(
                 $request->only('nome', 'cnpj', 'qtd_dose_disponivel')
             );
+
+            return $this->index(__('return.store'));
         } catch (\Exception $e) {
             $this->LogError($e);
         }
@@ -70,17 +72,47 @@ class FabricanteController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Update a newly created resource in storage.
      *
-     * @param  \App\Models\Fabricante  $fabricante
-     * @return \Inertia\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Fabricante $fabricante
+     * @return \Illuminate\Http\Response
      */
-    public function show(Fabricante $fabricante)
+    public function update(Request $request, Fabricante $fabricante)
     {
+        $request->validate([
+            'qtd_dose_disponivel' => 'required|integer'
+        ]);
+
         try {
-            return Inertia::render($this->view, ['dados' => $fabricante]);
+            $fabricante->update(
+                $request->only('qtd_dose_disponivel')
+            );
         } catch (\Exception $e) {
             $this->LogError($e);
         }
+
+        return Redirect::route('paciente.index');
+    }
+
+    /**
+     * delete a register
+     *
+     * @param  \App\Models\Fabricante $fabricante
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Fabricante $fabricante)
+    {
+        $fabricante->validate([
+            'qtd_dose_disponivel' => 'max:0'
+        ]);
+
+        try {
+            $fabricante->delete();
+        } catch (\Exception $e) {
+            $this->LogError($e);
+        }
+
+        return Redirect::route('paciente.index');
     }
 }

@@ -20,7 +20,7 @@ class HistoricoController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(string $success = null)
     {
         try {
             $dados = $this->model->SelectHistorico()
@@ -32,7 +32,7 @@ class HistoricoController extends Controller
             $dados = [];
         }
 
-        return Inertia::render($this->view, ['dados' => $dados]);
+        return Inertia::render($this->view, ['dados' => $dados, 'success' => $success]);
     }
 
     /**
@@ -64,6 +64,8 @@ class HistoricoController extends Controller
                 $request->only('data_vacinacao', 'data_prox_vaci',
                     'cod_paciente', 'cod_vacina', 'dose_atual', 'id_dose')
             );
+            
+            return $this->index(__('return.store'));
         } catch (\Exception $e) {
             $this->LogError($e);
         }
@@ -94,20 +96,5 @@ class HistoricoController extends Controller
         }
 
         return Redirect::route('historico.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Historico  $historico
-     * @return \Inertia\Response
-     */
-    public function show(Historico $historico)
-    {
-        try {
-            return Inertia::render($this->view, ['dados' => $historico ]);
-        } catch (\Exception $e) {
-            $this->LogError($e);
-        }
     }
 }
