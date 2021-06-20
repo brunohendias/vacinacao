@@ -18,7 +18,7 @@ class HistoricoController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
@@ -100,7 +100,7 @@ class HistoricoController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Historico  $historico
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function show(Historico $historico)
     {

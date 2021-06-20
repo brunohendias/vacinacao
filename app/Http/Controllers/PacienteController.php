@@ -16,7 +16,7 @@ class PacienteController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
@@ -74,7 +74,7 @@ class PacienteController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Paciente  $paciente
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function show(Paciente $paciente)
     {
