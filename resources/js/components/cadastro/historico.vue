@@ -1,5 +1,5 @@
 <template>
-    <form class="form" @submit.prevent="submit">
+    <form class="form">
         <div class="row">
             <div class="col-sm-3">
                 <pacientes :filtro="body" />
@@ -9,31 +9,29 @@
             </div>
             <div class="col-sm-2">
                 <label for="data_vacinacao">Data da vacinação: </label>
-                <input class="form-control" type="date" name="data_vacinacao" v-model="body.data_vacinacao" />
+                <input class="form-control" type="date" name="data_vacinacao" v-model="body.data_vacinacao" required />
             </div>
             <div class="col-sm-2">
                 <label for="id_dose">Identificação da dose: </label>
                 <input class="form-control" type="text" name="id_dose" v-model="body.id_dose" required
                     onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="00000000" />
             </div>
-            <button type="submit" class="btn btn-success h-100" :disabled="disable">
-                <span v-if="load" class="spinner-border" style="width: 1rem; height: 1rem;"></span>
-                <span v-else> Cadastrar </span>
-            </button>
+            <cadastro :body="body" :disable="disable" :web="web"/>
         </div>
     </form>
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia'
 import pacientes from '../shared/select/paciente.vue'
 import vacinas from '../shared/select/vacina.vue'
+import cadastro from '../botao/cadastro.vue'
 
 export default {
     name: 'historicoCadastro',
     components: {
         pacientes,
-        vacinas
+        vacinas,
+        cadastro
     },
     data() {
         return {
@@ -43,31 +41,14 @@ export default {
                 cod_vacina: null,
                 id_dose: null
             },
-            load: false
+            web: '/historico'
         }
-    },
-    created() {
-        Inertia.on('start', (event) => this.load = true)
-        Inertia.on('finish', (event) => this.load = false)
     },
     computed: {
         disable() {
             return !this.body.data_vacinacao  || !this.body.cod_paciente
                 || !this.body.cod_vacina || !this.body.id_dose
         }
-    },
-    methods: {
-        async submit() {
-            if (this.disable) return false;
-            
-            await this.$inertia.post('/historico', this.body);
-        }
     }
 }
 </script>
-
-<style scoped>
-    button {
-        margin-top: 31px;
-    }
-</style>

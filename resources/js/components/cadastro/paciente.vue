@@ -1,5 +1,5 @@
 <template>
-    <form class="form" @submit.prevent="submit">
+    <form class="form">
         <div class="row">
             <div class="col-sm-3">
                 <label for="nome">Nome: </label>
@@ -8,33 +8,33 @@
             </div>
             <div class="col-sm-2">
                 <label for="cpf">CPF: </label>
-                <the-mask class="form-control" :mask="cpf" name="cpf" v-model="body.cpf" type="text"
-                    :masked="false" placeholder="000.000.000-00" />
+                <the-mask class="form-control" type="text" name="cpf" v-model="body.cpf" required 
+                    :mask="cpf" :masked="false" placeholder="000.000.000-00" />
             </div>
             <div class="col-sm-2">
                 <label for="rg">RG: </label>
-                <the-mask class="form-control" :mask="rg" name="rg" v-model="body.rg" type="text"
-                    :masked="false" placeholder="00.000.000-0" />
+                <the-mask class="form-control" type="text" name="rg" v-model="body.rg" required 
+                    :mask="rg" :masked="false" placeholder="00.000.000-0" />
             </div>
             <div class="col-sm-3">
                 <label for="telefone">Telefone: </label>
-                <the-mask class="form-control" :mask="telefone" name="telefone" v-model="body.telefone" type="text"
-                    :masked="false" placeholder="(00) 00000-0000" />
+                <the-mask class="form-control" type="text" name="telefone" v-model="body.telefone" required 
+                    :mask="telefone" :masked="false" placeholder="(00) 00000-0000" />
             </div>
-            <button type="submit" class="btn btn-success h-100" :disabled="disable">
-                <span v-if="load" class="spinner-border" style="width: 1rem; height: 1rem;"></span>
-                <span v-else> Cadastrar </span>
-            </button>
+            <cadastro :body="body" :disable="disable" :web="web"/>
         </div>
     </form>
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia'
+import cadastro from '../botao/cadastro.vue'
 import { cpf, rg, telefone } from '../../core/masks'
 
 export default {
     name: 'fabricanteCadastro',
+    components: {
+        cadastro
+    },
     data() {
         return {
             cpf,rg,telefone,
@@ -44,12 +44,8 @@ export default {
                 rg: null,
                 telefone: null
             },
-            load: false
+            web: '/paciente'
         }
-    },
-    created() {
-        Inertia.on('start', (event) => this.load = true)
-        Inertia.on('finish', (event) => this.load = false)
     },
     computed: {
         disable() {
@@ -57,19 +53,6 @@ export default {
                 || !this.body.telefone || this.body.cpf.length < 11 
                 || this.body.rg.length < 9 || this.body.telefone.length < 11
         }
-    },
-    methods: {
-        async submit() {
-            if (this.disable) return false
-
-            await this.$inertia.post('/paciente', this.body)
-        }
     }
 }
 </script>
-
-<style scoped>
-    button {
-        margin-top: 31px;
-    }
-</style>

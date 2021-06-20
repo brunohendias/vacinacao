@@ -1,5 +1,5 @@
 <template>
-    <form class="form" @submit.prevent="submit">
+    <form class="form">
         <div class="row">
             <div class="col-sm-3">
                 <label for="nome">Nome: </label>
@@ -28,26 +28,24 @@
             </div>
             <div class="col-sm-3">
                 <label for="data_validade">Data de validade: </label>
-                <input class="form-control" type="date" name="data_validade" v-model="body.data_validade" />
+                <input class="form-control" type="date" name="data_validade" v-model="body.data_validade" required />
             </div>
             <div class="col-sm-3 h-100 ml-auto text-right">
-                <button type="submit" class="btn btn-success h-100" :disabled="disable">
-                    <span v-if="load" class="spinner-border" style="width: 1rem; height: 1rem;"></span>
-                    <span v-else> Cadastrar </span>
-                </button>
+                <cadastro :body="body" :disable="disable" :web="web"/>
             </div>
         </div>
     </form>
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia'
+import cadastro from '../botao/cadastro.vue'
 import fabricantes from '../shared/select/fabricante.vue'
 
 export default {
     name: 'fabricanteCadastro',
     components: {
-        fabricantes
+        fabricantes,
+        cadastro
     },
     data() {
         return {
@@ -60,26 +58,14 @@ export default {
                 qtd_atual: null,
                 intervalo_min: null
             },
-            load: false
+            web: '/vacina'
         }
-    },
-    created() {
-        Inertia.on('start', (event) => this.load = true)
-        Inertia.on('finish', (event) => this.load = false)
     },
     computed: {
         disable() {
             return !this.body.cod_fabricante  || !this.body.lote
                 || !this.body.data_validade || !this.body.qtd_recebida
                 || !this.body.intervalo_min || !this.body.nome
-        }
-    },
-    methods: {
-        async submit() {
-            this.body.qtd_atual = this.body.qtd_recebida
-            if (this.disable) return false;
-
-            await this.$inertia.post('/vacina', this.body);
         }
     }
 }
