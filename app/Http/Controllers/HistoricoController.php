@@ -36,8 +36,9 @@ class HistoricoController extends Controller
     {
         $request->validate([
             'data_vacinacao' => 'required|date',
-            'cod_paciente' => ['required','integer','exists:pacientes,id',Rule::unique('historicos')
-                ->where('cod_paciente', $request->cod_paciente)->where('cod_vacina', $request->cod_vacina)],
+            'cod_paciente' => ['required','integer','exists:pacientes,id',
+                Rule::unique('historicos')->where('cod_paciente', $request->cod_paciente)
+                    ->where('cod_vacina', $request->cod_vacina)],
             'cod_vacina' => 'required|integer|exists:vacinas,id',
             'id_dose' => 'required|string',
             'dose_atual' => 'integer',
